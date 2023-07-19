@@ -5,7 +5,7 @@ Members of the group:
 1) Iranel González
 2) Bruna Santos
 
-### CLEVER MEAL APP
+### CLEVER MEAL APP 🍎🫐🥗
 
 ### PROBLEM
 It’s not a secret for all of us here that obesity, heart disease, and diabetes are the biggest public health problems in the world.
@@ -27,12 +27,12 @@ Create a recommendation model able to recommend recipes food based on the calori
 ### METHODOLOGY
 
 
-### DATA INFORMATIONS:
+### DATA INFORMATION:
 - Source: [Diabetes Dataset](https://www.kaggle.com/datasets/thedevastator/healthy-diet-recipes-a-comprehensive-dataset)
 - Number of rows: 7062
 - Number of features: 6
 
-**  -NOTE-**
+**-NOTE-**
 
 ### MACHINE LEARNING MODEL
 **Unsupervised model: K-MEANS**
