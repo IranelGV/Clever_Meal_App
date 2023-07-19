@@ -28,7 +28,7 @@ Create a recommendation model able to recommend recipes food based on the calori
 
 
 ### DATA INFORMATION:
-- Source: [Diabetes Dataset](https://www.kaggle.com/datasets/thedevastator/healthy-diet-recipes-a-comprehensive-dataset)
+- Source: [Recipes Dataset](https://www.kaggle.com/datasets/thedevastator/healthy-diet-recipes-a-comprehensive-dataset)
 - Number of rows: 7062
 - Number of features: 6
 
