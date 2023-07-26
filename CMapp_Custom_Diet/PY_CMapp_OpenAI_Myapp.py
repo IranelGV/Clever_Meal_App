@@ -23,44 +23,24 @@ from PIL import Image
 from IPython.display import display
 from fuzzywuzzy import fuzz, process
 
+#####################################################################################################
 
-#get_ipython().run_line_magic('matplotlib', 'inline')
-
-
-# In[ ]:
-
-
-
-
-
-# In[11]:
-
-
-st.write("""" 
-
-# CLEVER MEAL 🍎🫐🥝🥗🥘
-Get your Personalized diet Plan!
-Base on your Goals! 
-     """)
-
-
-# ### Connecting with Open AI
-
-# In[11]:
-
+### Connecting with Open AI
 
 import os
 
 api_key = os.getenv("OPENAI_API_KEY")
+api_key = "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"
 
+#Ira kEY
+#api_key = "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"
 
-# In[12]:
+#Aleks Key
+# api_key = "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"
 
+# Gen Key
+# api_key = "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"
 
-api_key = "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"
-
-
-# In[13]:
 
 
 import openai
@@ -68,93 +48,75 @@ import openai
 # load and set our key
 openai.api_key = api_key
 
+#######################################################################################################
 
-# ### 1. Weight🏗️  & 2. Hight 🌁  & 3. Edge👵🏼👴🏻
 
-# In[3]:
-
+### 1. Weight🏗️  & 2. Hight 🌁  & 3. Edge👵🏼👴🏻
 
 def get_non_empty_float(prompt):
     while True:
         try:
-            value = float(input(prompt))
+            value = float(st.text_input(prompt))
             if value <= 0:
-                print("Please enter a positive non-zero value.")
+                st.warning("Please enter a positive non-zero value.")
             else:
                 return value
         except ValueError:
-            print("Invalid input. Please enter a valid number.")
+            st.warning("Invalid input. Please enter a valid number.")
 
-
-# ### 4. Gender 🚺🚹
-
-# In[4]:
-
+### 4. Gender 🚺🚹
 
 def get_gender():
     while True:
-        gender = input("Gender (male/female): ").lower()
+        gender = st.text_input("Gender (male/female): ").lower()
         if gender in ['male', 'female']:
             return gender
         else:
-            print("Invalid gender. Please enter 'male' or 'female'.")
+            st.warning("Invalid gender. Please enter 'male' or 'female'.")
 
 
-# ### 5. Nilvel of phisical Activity ⛹🏽⛹🏻‍♀️
+#get_gender()
 
-# In[5]:
 
+### 5. Nilvel of phisical Activity ⛹🏽⛹🏻‍♀️
 
 def get_activity_level():
-    
     # Define a list of correct spellings or keywords:
     # correct_spellings = ["sedentary", "lightly active", "moderately active", "very active"]
 
     activity_levels = ['sedentary', 'lightly active', 'moderately active', 'very active', 'extra active']
+
+    # Use st.selectbox to provide valid options as suggestions
+    nivel_activity = st.selectbox("Activity Level", activity_levels)
+
+    # Optionally, you can add a warning message if the entered value is not in the list
+    if nivel_activity not in activity_levels:
+        st.warning("Invalid activity level. Please choose from the provided options.")
     
+    return nivel_activity
 
-    
-    
-    while True:
-        nivel_activity = input("Activity Level (sedentary/lightly active/moderately active/very active/extra active): ").lower()
-        
-        # closest match
-        closest_match, similarity_score = process.extractOne(nivel_activity, activity_levels)
-        
-        if nivel_activity in activity_levels:
-            return nivel_activity
-        else:
-            print("Invalid activity level. Please choose from the provided options.")
+#get_activity_level()
 
-
-# ### 6. Goal 🏆
-
-# In[6]:
-
+### 6. Goal 🏆
 
 def get_user_goal():
-    
     # Define a list of correct spellings or keywords:
     user_goal = ['loss weight', 'maintain weight', 'gain weight']
     
-    while True:
-        user_goals_input = input("What is your Goal: (Loss Weight/Maintain Weight/Gain Weight: ").lower()
-        
-        # closest match
-        #closest_match, similarity_score = process.extractOne(nivel_activity, activity_levels)
-        
-        if user_goals_input in user_goal:
-            return user_goals_input
-        else:
-            print("Invalid user goal. Please choose from the provided options.")
+    # Use st.selectbox to provide valid options as suggestions
+    user_goals_input = st.selectbox("What is your Goal:", user_goal)
 
+    # Optionally, you can add a warning message if the entered value is not in the list
+    if user_goals_input not in user_goal:
+        st.warning("Invalid user goal. Please choose from the provided options.")
+    
+    return user_goals_input
 
-# ### ➡️ Calculating the User Calories (BMR)
-# 
-# #### BMR:Basal Metabolic Rate
+#get_user_goal()
 
-# In[7]:
+### ➡️ Calculating the User Calories (BMR)
 
+#### BMR:Basal Metabolic Rate
 
 def calculate_bmr(weight, height, age, gender):
     # BMR calculation using the Harris-Benedict equation
@@ -164,11 +126,7 @@ def calculate_bmr(weight, height, age, gender):
         bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age)
     return bmr
 
-
-# ### ➡️ Get user inputs
-
-# In[33]:
-
+### ➡️ Get user inputs
 
 def get_user_inputs():
  
@@ -176,9 +134,10 @@ def get_user_inputs():
 
     # 1. Weight🏗️  & 2. Hight 🌁  & 3. Edge👵🏼👴🏻 ✅✅✅
     
-    weight = int(get_non_empty_float("Weight (kg): "))
-    height = int(get_non_empty_float("Height (cm): "))
-    age = int(get_non_empty_float("Age (years): "))
+    weight = get_non_empty_float("Weight (kg): ")
+    height = get_non_empty_float("Height (cm): ")
+    age = get_non_empty_float("Age (years): ")
+
     
     # 4. Gender 🚺🚹 ✅
     gender = get_gender()
@@ -267,100 +226,42 @@ def get_user_inputs():
     
     return user_question
 
+#get_user_inputs()
 
-# In[34]:
-
-
-get_user_inputs() 
-
-
-# ### ➡️ Get Personalized diet Plan
-
-# In[45]:
-
-
-user_inputs = get_user_inputs()
-
-response = openai.ChatCompletion.create(
-      model="gpt-3.5-turbo",
-      messages=[ # messages parameter must be a list of dictionaries
-    # can be as short as one message or many back and forth turns.
-    {"role": "system", "content": "You are a famous Nutritionist. Share your best nutritional plan diet. In your nutrition plans, you provide breakfast, lunch, snack, and dinner based on the calories per day, macronutrients, and the goal of the user. In your nutrition plans, you show the macronutrients distributions and calories for the breakfast, lunch, snack, and dinner you suggested" }, # each dictionary has a role and content
-    {"role": "user", "content":user_inputs},
-  ]
-)
+def get_personalized_diet_plan(user_inputs):
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a famous Nutritionist. Share your best nutritional plan diet. In your nutrition plans, you provide breakfast, lunch, snack, and dinner based on the calories per day, macronutrients, and the goal of the user. In your nutrition plans, you show the macronutrients distributions and calories for the breakfast, lunch, snack, and dinner you suggested" },
+            {"role": "user", "content": user_inputs},
+        ]
+    )
+    system_response = response['choices'][0]["message"]["content"]
+    return system_response
 
 
-# In[46]:
+def main():
 
+    st.title(" ➡️ CLEVER MEAL 🍎🧠")  # Largest size
 
-response 
+    st.header("Get your Personalized Diet Plan in seconds!!")  # Slightly smaller than title
 
+    st.subheader("Based on your Nutrition Goals!🎯🚀")
+    
+    
+    st.title("Personalized Diet Plan App")
 
-# In[49]:
-
-
-def get_personalized_diet_plan():
-    # Get user inputs
     user_inputs = get_user_inputs()
 
-    # Use the OpenAI API to get the system response
-    #response = openai.Completion.create(
-     #   engine="text-davinci-002",
-      #  prompt=user_inputs,
-       # message=
-        #model=
-        #max_tokens=1000,
-        #temperature=0.7,
-        #n=1,
-    #)
-    
-    response = openai.ChatCompletion.create(
-      model="gpt-3.5-turbo",
-      messages=[ # messages parameter must be a list of dictionaries
-    # can be as short as one message or many back and forth turns.
-    {"role": "system", "content": "You are a famous Nutritionist. Share your best nutritional plan diet. In your nutrition plans, you provide breakfast, lunch, snack, and dinner based on the calories per day, macronutrients, and the goal of the user. In your nutrition plans, you show the macronutrients distributions and calories for the breakfast, lunch, snack, and dinner you suggested" }, # each dictionary has a role and content
-    {"role": "user", "content": user_inputs},
-  ]
-)
-    # Extract the system response from the API response
-    system_response = response['choices'][0]["message"]["content"]
-    
-    #system_response = response['choices'][0]["content']
-
-    # Print the personalized diet plan
-    print("\nPersonalized Diet Plan:")
-    print(system_response)
-
-#if __name__ == "__main__":
+    if st.button("Get Personalized Diet Plan"):
+        personalized_diet_plan = get_personalized_diet_plan(user_inputs)
+        st.markdown("\nPersonalized Diet Plan:")
+        st.markdown(personalized_diet_plan)
 
 
-# In[50]:
+if __name__ == "__main__":
+    main()
 
 
-get_personalized_diet_plan()
-
-
-# In[51]:
-
-
-get_personalized_diet_plan()
-
-
-# In[37]:
-
-
-get_personalized_diet_plan()
-
-
-# In[38]:
-
-
-get_personalized_diet_plan()
-
-
-# In[ ]:
-
-
-
+        
 
